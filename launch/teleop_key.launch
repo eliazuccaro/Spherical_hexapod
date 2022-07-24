@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <!-- launch in teleop_key -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" output="screen" />
+              
+</launch>

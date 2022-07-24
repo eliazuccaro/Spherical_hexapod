@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<!-- variables import -->
+	<xacro:include filename="$(find shellbot_pkg)/models/variables.urdf.xacro" />
+
+	<!-- bottom leg description -->
+	<xacro:macro name="bottom_leg" params="leg_num_B">
+		
+		<!-- fictitious link (rotation and translation in Z) -->
+		<link name="leg_B_${leg_num_B}_0Z">
+			<selfCollide>0</selfCollide>
+			<inertial>
+				<mass value="1e-3" />
+				<inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+			</inertial>
+		</link>
+		<!-- leg_B_[leg_number]_1 link - leg gear + first link -->
+		<link name="leg_B_${leg_num_B}_1">
+			<selfCollide>0</selfCollide>
+			<inertial>
+				<mass value="${LB_i_1_m}" />
+				<xacro:visual_off_leg_B_i_1/>
+				<xacro:leg_B_i_1_inertia/>
+			</inertial>
+			<collision name="leg_B_${leg_num_B}_1">
+				<xacro:visual_off_leg_B_i_1/>
+				<xacro:leg_B_01_geometry/>
+				<default_surface/>
+			</collision>
+			<visual>
+				<xacro:visual_off_leg_B_i_1/>
+				<xacro:leg_B_01_geometry/>
+			</visual>
+		</link>
+		<!-- leg_B_[leg_number]_2 link - motors pair -->
+		<link name="leg_B_${leg_num_B}_2">
+			<selfCollide>1</selfCollide>
+			<inertial>
+				<mass value="${LB_i_2_m}" />
+				<xacro:visual_off_leg_B_i_2/>
+				<xacro:leg_B_i_2_inertia/>
+			</inertial>
+			<collision name="leg_B_${leg_num_B}_2">
+				<xacro:visual_off_leg_B_i_2/>
+				<xacro:leg_B_12_geometry/>
+				<default_surface/>
+			</collision>
+			<visual>
+				<xacro:visual_off_leg_B_i_2/>
+				<xacro:leg_B_12_geometry/>
+			</visual>
+		</link>
+		<!-- leg_B_[leg_number]_3 link - link after motors pair -->
+		<link name="leg_B_${leg_num_B}_3">
+			<selfCollide>1</selfCollide>
+			<inertial>
+				<mass value="${LB_i_3_m}" />
+				<xacro:visual_off_leg_B_i_3/>
+				<xacro:leg_B_i_3_inertia/>
+			</inertial>
+			<collision name="leg_B_${leg_num_B}_3">
+				<xacro:visual_off_leg_B_i_3/>
+				<xacro:leg_B_23_geometry/>
+			</collision>
+			<default_surface/>
+			<visual>
+				<xacro:visual_off_leg_B_i_3/>
+				<xacro:leg_B_23_geometry/>
+			</visual>
+		</link>
+		<!-- leg_B_[leg_number]_4 link - leg tip + shell -->
+		<link name="leg_B_${leg_num_B}_4">
+			<selfCollide>1</selfCollide>
+			<inertial>
+				<mass value="${LB_i_4_m}" />
+				<xacro:visual_off_leg_B_i_4/>
+				<xacro:leg_B_i_4_inertia/>
+			</inertial>
+			<collision name="leg_B_${leg_num_B}_4">
+				<xacro:visual_off_leg_B_i_4/>
+				<xacro:bottom_shell_geometry/>
+				<default_surface/>
+			</collision>
+			<visual>
+				<xacro:visual_off_leg_B_i_4/>
+				<xacro:bottom_shell_geometry/>
+			</visual>
+		</link>
+
+		<!-- q_b_i_0_offset - link from leg gear to first link -->
+		<joint name="q_b_${leg_num_B}_0_offset" type="fixed">
+			<parent link="base_chassis" />
+			<child link="leg_B_${leg_num_B}_0Z" />
+			<origin rpy="0 0 ${1.0472 * leg_num_B}" xyz="0 0 ${L_O0_B_Z}" />
+			<axis xyz="0 0 1" />
+		</joint>
+		<!-- q_b_[leg_number]_1 - leg gear (central gear actuation / 6) -->
+		<joint name="q_b_${leg_num_B}_1" type="revolute">
+			<parent link="leg_B_${leg_num_B}_0Z" />
+			<child link="leg_B_${leg_num_B}_1" />
+			<origin rpy="0 0 0" xyz="${L_O0_B_X} 0 0" />
+			<limit effort="${AX_12A_maxeffort}" velocity="${AX_12A_maxspeed}" upper="${q1_max_pos}" lower="${q1_min_pos}" />
+			<dynamics damping="6e-10" friction="0.13"/>
+			<axis xyz="0 0 1" />
+		</joint>
+		<!-- q_b_[leg_number]_2 - first motor of motors pair -->
+		<joint name="q_b_${leg_num_B}_2" type="revolute">
+			<parent link="leg_B_${leg_num_B}_1" />
+			<child link="leg_B_${leg_num_B}_2" />
+			<origin rpy="${DH_q_1_1_2_rot}" xyz="${DH_q_1_1_2_pos}" />
+			<limit effort="${AX_12A_maxeffort}" velocity="${AX_12A_maxspeed}" upper="${q2_max_pos}" lower="${q2_min_pos}" />
+			<dynamics damping="6e-10" friction="0.13"/>
+			<axis xyz="0 0 1" />
+		</joint>
+		<!-- q_b_[leg_number]_3 - second motor of motors pair -->
+		<joint name="q_b_${leg_num_B}_3" type="revolute">
+			<parent link="leg_B_${leg_num_B}_2" />
+			<child link="leg_B_${leg_num_B}_3" />
+			<origin rpy="${DH_q_1_1_3_rot}" xyz="${DH_q_1_1_3_pos}" />
+			<limit effort="${AX_18A_maxeffort}" velocity="${AX_18A_maxspeed}" upper="${q3_max_pos}" lower="${q3_min_pos}" />
+			<dynamics damping="6e-10" friction="0.13"/>
+			<axis xyz="0 0 1" />
+		</joint>
+		<!-- q_b_[leg_number]_4 - third motor of bottom leg -->
+		<joint name="q_b_${leg_num_B}_4" type="revolute">
+			<parent link="leg_B_${leg_num_B}_3" />
+			<child link="leg_B_${leg_num_B}_4" />
+			<origin rpy="${DH_q_1_1_4_rot}" xyz="${DH_q_1_1_4_pos}" />
+			<limit effort="${AX_12A_maxeffort}" velocity="${AX_12A_maxspeed}" upper="${q4_max_pos}" lower="${q4_min_pos}" />
+			<dynamics damping="6e-10" friction="0.13"/>
+			<axis xyz="0 0 1" />
+		</joint>
+
+		<!-- *********************************************** GAZEBO ************************************************ -->
+
+		<gazebo reference="leg_b_${leg_num_B}_0"></gazebo>
+		<gazebo reference="leg_b_${leg_num_B}_1"></gazebo>
+		<gazebo reference="leg_b_${leg_num_B}_2"></gazebo>
+		<gazebo reference="leg_B_${leg_num_B}_2"></gazebo>
+		<gazebo reference="leg_B_${leg_num_B}_3"></gazebo>
+
+		<gazebo reference="leg_B_${leg_num_B}_4">
+      		<!-- Columb friction coefficients http://www.ode.org/ode-latest-userguide.html#sec_7_3_7 -->
+      		<mu1 value="0.4"/>
+      		<mu2 value="0.4"/>
+      		<!-- contact stiffness -->
+      		<kp value="100000.0"/>
+      		<!-- contact damping -->
+      		<kd value="10.0"/>
+		</gazebo>
+
+		<!-- ****************************************** ATTUAZIONE ****************************************** -->
+		<transmission name="tran_b_${leg_num_B}_1">
+			<type>transmission_interface/SimpleTransmission</type>
+			<actuator name="motor_b_${leg_num_B}_1">
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+			<joint name="q_b_${leg_num_B}_1">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+		</transmission>
+
+		<transmission name="tran_b_${leg_num_B}_2">
+			<type>transmission_interface/SimpleTransmission</type>
+			<actuator name="motor_b_${leg_num_B}_2">
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+			<joint name="q_b_${leg_num_B}_2">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+		</transmission>
+
+		<transmission name="tran_b_${leg_num_B}_3">
+			<type>transmission_interface/SimpleTransmission</type>
+			<actuator name="motor_b_${leg_num_B}_3">
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+			<joint name="q_b_${leg_num_B}_3">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+		</transmission>
+
+		<transmission name="tran_b_${leg_num_B}_4">
+			<type>transmission_interface/SimpleTransmission</type>
+			<actuator name="motor_b_${leg_num_B}_4">
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+			<joint name="q_b_${leg_num_B}_4">
+				<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+			</joint>
+		</transmission>
+
+	</xacro:macro>
+</robot>

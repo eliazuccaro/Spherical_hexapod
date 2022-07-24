@@ -1,0 +1,52 @@
+<launch>
+
+  <!-- Robot starting pose -->
+  <arg name="x" default="0"/>
+  <arg name="y" default="0"/>
+  <!-- <arg name="z" default="0"/> -->
+  <arg name="z" default="0.2"/>
+  <arg name="roll" default="0"/>
+  <arg name="pitch" default="0"/>
+  <arg name="yaw" default="0"/>
+
+  <!-- these are the arguments you can pass this launch file, for example use_sim_time:=false -->
+  <arg name="use_sim_time" default="true"/>
+  <arg name="no_gui" default="false"/>
+  <arg name="debug" default="false"/>
+  <arg name="model" default="$(find shellbot_pkg)/models/shell_robot.urdf.xacro"/>     <!-- qui viene caricato il robot -->
+  <arg name="world" default="$(find shellbot_pkg)/worlds/empty.world"/>      <!-- qui viene caricato l'ambiente in cui il robot si muove -->
+
+  <arg unless="$(arg no_gui)" name="gui" value="true"/>
+  <arg     if="$(arg no_gui)" name="gui" value="false"/>
+  <arg unless="$(arg no_gui)" name="headless" value="false"/>
+  <arg     if="$(arg no_gui)" name="headless" value="true"/>
+
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world)"/>
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="true"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+    <arg name="respawn_gazebo" value="true"/>
+  </include>
+
+  <!-- robot_state_publisher uses the URDF specified by the parameter robot_description
+       and the joint positions from the topic joint_states to calculate the forward kinematics
+       of the robot and publish the results via tf -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
+  <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="30.0" />
+  </node>
+  <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" ></node> -->
+
+  <!-- push robot_description to factory and spawn robot in gazebo -->
+  <!-- per far avviare la simulazione da sè, aggiungere l'arg -unpause -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -param robot_description -model shellbot
+              -x $(arg x) -y $(arg y) -z $(arg z)
+              -R $(arg roll) -P $(arg pitch) -Y $(arg yaw) 
+              " respawn="false" output="screen" />
+
+</launch>

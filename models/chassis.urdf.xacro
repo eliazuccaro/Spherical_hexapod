@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- variables inclusion -->
+    <xacro:include filename="$(find shellbot_pkg)/models/variables.urdf.xacro" />
+
+    <!-- map link -->
+    <link name="map">
+        <selfCollide>1</selfCollide> -->
+    </link>
+    
+    <!-- chassis link -->
+    <link name="base_chassis">
+        <selfCollide>0</selfCollide>
+        <inertial>
+            <mass value="${base_chassis_m}"/>
+            <origin rpy ="0 0 0" xyz="0 0 0"/>
+            <xacro:base_link_inertia/>
+        </inertial>
+        <collision name="base_chassis">
+            <xacro:visual_off_base_link/>
+            <xacro:base_link_geometry/>
+        </collision>
+        <visual>
+        	<xacro:visual_off_base_link/>
+            <xacro:base_link_geometry/>
+        </visual>
+    </link>
+
+    <!-- from map to robot -->
+    <joint name="to_robot" type="fixed">
+        <parent link="map"/>
+        <child link="base_chassis"/>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+    </joint>
+
+    <!-- ******************************************** GAZEBO ******************************************** -->
+    <gazebo reference="map"></gazebo>
+    <gazebo reference="base_chassis"></gazebo>
+
+</robot>

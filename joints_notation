@@ -1,0 +1,44 @@
+Robot joints notation:
+
+- q_c --> central gear motor
+
+- q_b_i_j --> j-th motor of the i-th BOTTOM leg (b = "bottom")
+	       
+- q_u_i_j --> j-th motor of the i-th UPPER leg (u = "upper")
+
+
+Simulation motors indexes (1 to 36):
+
+BOTTOM LEGS
+- 1 to 4 --> first leg motors
+- 5 to 8 --> second leg motors
+- 9 to 12 --> third leg motors
+- 13 to 16 --> fourth leg motors
+- 17 to 20 --> fifth leg motors
+- 21 to 24 --> sixth leg motors
+UPPER  LEGS
+- 25 - 26 --> first leg motors
+- 27 - 28 --> second leg motors
+- 29 - 30 --> third leg motors
+- 31 - 32 --> fourth leg motors
+- 33 - 34 --> fifth leg motors
+- 35 - 36 --> sixth leg motors
+
+
+Real robot motors indexes (0 to 30):
+
+- 0 --> central gear
+BOTTOM LEGS
+- 1 to 3 --> first leg motors
+- 4 to 6 --> second leg motors
+- 7 to 9 --> third leg motors
+- 10 to 12 --> fourth leg motors
+- 13 to 15 --> fifth leg motors
+- 16 to 18 --> sixth leg motors
+UPPER  LEGS
+- 19 - 20 --> first leg motors
+- 21 - 22 --> second leg motors
+- 23 - 24 --> third leg motors
+- 25 - 26 --> fourth leg motors
+- 27 - 28 --> fifth leg motors
+- 29 - 30 --> sixth leg motors

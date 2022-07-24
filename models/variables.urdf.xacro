@@ -1,0 +1,337 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<!-- bottom leg starting position -->
+	<xacro:property name="L_O0_B" value="${L_O0_B_X} 0 ${L_O0_B_Z}" />
+	<xacro:property name="R_O0_B" value="0 0 1.0472" />
+	
+	<!--  DH from q_1_1_1 to q_1_i_2  -->
+	<xacro:property name="DH_q_1_1_2_pos" value="${LB_12} 0 0" />
+	<xacro:property name="DH_q_1_1_2_rot" value="0 0 0" />
+
+	<!--  DH from q_1_1_2 to q_1_i_3  -->
+	<xacro:property name="init_q_B_1_i_3" value="${-3.5 * pi / 180}" />
+	<xacro:property name="DH_q_1_1_3_pos" value="${LB_23_X} ${LB_23_Z} ${-LB_23_Z}" />
+	<xacro:property name="DH_q_1_1_3_rot" value="-${pi/2} ${init_q_B_1_i_3} 0" />
+
+	<!--  DH from q_1_1_3 to q_1_i_4  -->
+	<xacro:property name="init_q_B_1_i_4" value="${88 * pi / 180}" />
+	<xacro:property name="DH_q_1_1_4_pos" value="${LB_34} 0 0" />
+	<xacro:property name="DH_q_1_1_4_rot" value="0 0 ${init_q_B_1_i_4}" />
+  
+    <!--  upper leg starting position -->
+    <xacro:property name="init_q_U_2_i_1" value="-0.67" />
+    <xacro:property name="init_q_U_2_i_2" value="1.16" />
+    <xacro:property name="DH_q_2_1_1_pos" value="${U_distance_X} 0.002 0" />
+    <xacro:property name="DH_q_2_1_1_rot" value="${pi/2} ${init_q_U_2_i_1} 0" />
+    <xacro:property name="DH_q_2_1_2_pos" value="${L12_U} -0.002 0" />
+    <xacro:property name="DH_q_2_1_2_rot" value="0 0 ${init_q_U_2_i_2}" />
+
+	<!-- ******************************** VISUAL ELEMENTS OFFSET ******************************** -->
+	<xacro:macro name="visual_off_base_link">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+	</xacro:macro>
+
+	<xacro:macro name="visual_off_upper_chassis">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+	</xacro:macro>
+
+	<xacro:macro name="visual_off_bottom_chassis">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+	</xacro:macro>
+
+	<xacro:macro name="visual_off_chassis">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+	</xacro:macro>
+
+	<xacro:macro name="visual_off_FF_link_B_i">
+		<origin rpy="0 0 0" xyz="0 0 -0.032"/>
+	</xacro:macro>
+
+	<xacro:macro name="visual_off_leg_B_i_1">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+	</xacro:macro>
+	<xacro:macro name="visual_off_leg_B_i_2">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+	</xacro:macro>
+	<xacro:macro name="visual_off_leg_B_i_3">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+	</xacro:macro>
+	<xacro:macro name="visual_off_leg_B_i_4">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+	</xacro:macro>
+	<xacro:macro name="visual_off_leg_B_i_5">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+	</xacro:macro>
+	<xacro:macro name="visual_off_FF_link_U_i">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+	</xacro:macro>
+	<xacro:macro name="visual_off_leg_U_i_1">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+	</xacro:macro>
+	<xacro:macro name="visual_off_leg_U_i_2">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+	</xacro:macro>
+
+	<!-- ******************************** CONSTANTS ******************************** -->
+	<!-- spawn location -->
+	<xacro:property name="spawn_center" value="0 0 0" />
+
+	<!-- rescale_to_meters -->
+	<xacro:property name="scaling" value="0.001 0.001 0.001" />
+
+	<!-- center gear radius -->
+	<xacro:property name="CG_radius" value="0.040" />
+
+	<!-- orbit gear radius -->
+	<xacro:property name="OG_radius" value="0.015" />
+
+	<!-- orbit gear radius -->
+	<xacro:property name="gears_height" value="0.019" />
+
+	<!-- distance between middle gear and orbit gear center -->
+	<xacro:property name="L_O0_B_X" value="0.066" />
+
+	<!-- distance between chassis center and orbit gear center -->
+	<xacro:property name="L_O0_B_Z" value="-0.029" />
+
+	<!-- distance between orbit gear center and successive joint (LB12) -->
+	<xacro:property name="LB_12" value="0.120" />
+
+	<!-- distance between joint q_1_1_2 and q_1_1_3 ORIGINAL:0.038 -->
+	<xacro:property name="LB_23_X" value="0.0335" />
+
+	<!-- interax q_1_1_2 and q_1_1_3 along z -->
+	<xacro:property name="LB_23_Z" value="0.02425" />
+
+	<!-- interax q_1_1_2 and q_1_1_3 along y -->
+	<xacro:property name="LB_23_Y" value="0.02794" />
+
+	<!-- distance between joint q_1_1_3 and q_1_1_4 ORIGINAL:0.066 -->
+	<xacro:property name="LB_34" value="0.04" />
+
+	<!-- interax q_1_1_2 and q_1_1_4 along z -->
+	<xacro:property name="LB_34_Z" value="0.00" />
+
+	<!-- distance between joint q_1_1_4 and ee leg ORIGINAL:0.01169 -->
+	<xacro:property name="LB_45" value="0.112" />
+
+	<!-- distance x center-first joint upper leg -->
+	<xacro:property name="U_distance_X" value="0.07675" />
+
+	<!-- distance Z center-first joint upper leg -->
+	<xacro:property name="U_distance_Z" value="0.0635" />
+
+	<!-- upper leg 12 lenght  ORIGINAL:0.085-->
+	<xacro:property name="L12_U" value="0.065" />
+
+	<!-- upper leg 23 lenght -->
+	<xacro:property name="L23_U" value="0.085" />
+
+	<!-- chassis height -->
+	<xacro:property name="Hchassis" value="0.01" />
+
+	<!-- chassis radius -->
+	<xacro:property name="Rchassis" value="0.08" />
+	
+	<!-- chassis relative distance/2 -->
+	<xacro:property name="DMchassis" value="${(Hchassis*2+Dchassis)/2}" />
+
+	<!-- visual proprieties -->
+	<xacro:property name="link_radius" value="0.005" />
+	<xacro:property name="LB12_C_pos" value="${LB_12/2} 0 0" />
+	<xacro:property name="LB_12_len" value="${LB_12}" />
+	<xacro:property name="LB23_C_pos" value="${LB_23_X/2} 0 0" />
+	<xacro:property name="LB_23_len" value="${LB_23_X}" />
+	<xacro:property name="LB34_C_pos" value="${LB_34/2} 0 0" />
+	<xacro:property name="LB_34_len" value="${LB_34}" />
+	<xacro:property name="LB45_C_pos" value="${LB_45/2} 0 0" />
+	<xacro:property name="LB_45_len" value="${LB_45}" />
+
+	<!-- joint limits -->
+	<!-- <xacro:property name="AX_12A_maxeffort" value="1.4709975" /> PEAK TORQUE -->
+	<xacro:property name="AX_12A_maxeffort" value="0.736" />
+	<!-- <xacro:property name="AX_18A_maxeffort" value="1.7651970" /> PEAK TORQUE -->
+	<xacro:property name="AX_18A_maxeffort" value="0.882" />
+	<xacro:property name="AX_12A_maxspeed" value="1.78465545" />
+	<xacro:property name="AX_18A_maxspeed" value="1.78465545" />
+
+	<!-- joint limits - BOTTOM LEGS -->
+	<xacro:property name="q1_max_pos" value="0" />
+	<xacro:property name="q1_min_pos" value="-${2.5}" />
+	<xacro:property name="q2_max_pos" value="${pi}" />
+	<xacro:property name="q2_min_pos" value="-${pi}" />
+	<xacro:property name="q3_max_pos" value="${pi}" />
+	<xacro:property name="q3_min_pos" value="-${pi/2}" />
+	<xacro:property name="q4_max_pos" value="${pi}" />
+	<xacro:property name="q4_min_pos" value="-${pi}" />
+
+	<!-- joint limits - UPPER LEGS -->
+	<xacro:property name="q_U_1_max_pos" value="${pi/2}" />
+	<xacro:property name="q_U_1_min_pos" value="-${pi/2}" />
+	<xacro:property name="q_U_2_max_pos" value="${pi/2}" />
+	<xacro:property name="q_U_2_min_pos" value="-${pi/2}" />
+
+	<!-- ******************************** PHYSICAL PROPERTIES ******************************** -->
+	<xacro:property name="base_chassis_m" value="1.007" />
+
+	<xacro:property name="LB_i_1_m" value="0.042" />
+	<xacro:property name="LB_i_2_m" value="0.108" />
+	<xacro:property name="LB_i_3_m" value="0.008" />
+	<xacro:property name="LB_i_4_m" value="0.152" />	<!-- bottom shell mass -->
+
+	<xacro:property name="LU_i_1_m" value="0.011" />
+	<xacro:property name="LU_i_2_m" value="0.133" />  	<!-- upper shell mass -->
+
+	<!-- ******************************** INERTIAS ******************************** -->
+	<xacro:macro name="base_link_inertia">
+			<inertia ixx="3444e-6" ixy="-37e-6" ixz="6e-6" iyy="3644e-6" iyz="70e-6" izz="2502e-6" />
+	</xacro:macro>
+    
+	<xacro:macro name="leg_u_i_0_inertia">
+			<inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+	</xacro:macro>	
+    
+	<xacro:macro name="leg_U_i_1_inertia">
+			<inertia ixx="13e-6" ixy="9e-6" ixz="2e-6" iyy="19e-6" iyz="-2e-6" izz="30e-6" />
+	</xacro:macro>
+    
+	<xacro:macro name="leg_U_i_2_inertia">
+			<inertia ixx="180e-6" ixy="-42e-6" ixz="-7e-6" iyy="608e-6" iyz="1e-6" izz="528e-6" />
+	</xacro:macro>
+	
+	<xacro:macro name="leg_B_i_1_inertia">
+		<inertia ixx="27e-6" ixy="-16e-6" ixz="0" iyy="125e-6" iyz="0" izz="110e-6" />
+	</xacro:macro>
+	
+	<xacro:macro name="leg_B_i_2_inertia">
+			<inertia ixx="81e-6" ixy="-44e-6" ixz="15e-6" iyy="85e-6" iyz="15e-6" izz="121e-6" />
+	</xacro:macro>
+	
+	<xacro:macro name="leg_B_i_3_inertia">
+			<inertia ixx="4e-6" ixy="0.4e-6" ixz="0" iyy="8e-6" iyz="0" izz="5e-6" />
+	</xacro:macro>
+	
+	<xacro:macro name="leg_B_i_4_inertia">
+			<inertia ixx="186e-6" ixy="54e-6" ixz="-1e-6" iyy="474e-6" iyz="1e-6" izz="391e-6" />
+	</xacro:macro>
+
+	<!-- surface_def -->
+	<xacro:macro name="default_surface">
+		<surface>
+			<contact>
+				<friction>
+    				<ode>
+      					<mu>1000</mu>
+      					<mu2>1500</mu2>
+    				</ode>
+  				</friction>
+  				<bounce>
+    				<restitution_coefficient>0.001</restitution_coefficient>
+    				<threshold>0.01</threshold>
+  				</bounce>
+				<poissons_ratio>0.347</poissons_ratio>
+				<elastic_modulus>8.8e+07</elastic_modulus>
+				<ode>
+					<soft_cfm>0.004</soft_cfm>
+					<soft_erp>0.05</soft_erp>
+					<kp>10</kp>
+					<kd>2.5</kd>
+					<max_vel>10.0</max_vel>
+					<min_depth>0.001</min_depth>
+				</ode>
+			</contact>
+		</surface>
+	</xacro:macro>
+	
+	<!-- ode_solver -->
+	<xacro:macro name="ode_solver">
+		<physics name="ode_custom" type="oder" default="true">
+			<real_time_update_rate>1000</real_time_update_rate>
+			<max_step_size>0.008</max_step_size>
+			<min_step_size>0.0001</min_step_size>
+			<max_contacts>50</max_contacts>
+			<use_dynamic_moi_rescaling>1</use_dynamic_moi_rescaling>
+			<ode>
+				<solver>
+					<type>quick</type>
+					<precon_iters>10</precon_iters>
+					<iters>50</iters>
+					<sor>1.2</sor>
+				</solver>
+				<constraints>
+					<cfm>0.05</cfm>
+					<erp>0.1</erp>
+				</constraints>
+			</ode>
+		</physics>
+	</xacro:macro>
+	
+	<!-- *********************************************** MESHES FILES UPLOAD *********************************************************** -->
+	<!-- stl file location -->
+	<xacro:property name="stl_path" value="package://shellbot_pkg/meshes/" />
+
+    <!-- chassis -->
+	<xacro:property name="base_chassis" value="${stl_path}base_chassis.stl" />
+
+    <!-- bottom legs -->
+    <xacro:property name="leg_B_01" value="${stl_path}leg_B_01.stl" />
+    <xacro:property name="central_gear" value="${stl_path}central_gear.stl" />
+    <xacro:property name="leg_B_12" value="${stl_path}leg_B_12.stl" />
+    <xacro:property name="leg_B_23" value="${stl_path}leg_B_23.stl" />
+    <xacro:property name="bottom_shell" value="${stl_path}bottom_shell.stl" />
+
+    <!-- upper_legs -->
+    <xacro:property name="leg_U_01" value="${stl_path}leg_U_01.stl" />
+    <xacro:property name="upper_shell" value="${stl_path}upper_shell.stl" />
+
+    <!-- ***************************************** MESHES FILES DEFINITIONS ************************************************************ -->	
+	<!-- chassis -->
+	<xacro:macro name="base_link_geometry">
+		<geometry>
+			<mesh filename="${base_chassis}" scale="${scaling}" />
+		</geometry>
+	</xacro:macro>
+
+	<!-- leg gear and first link -->
+    <xacro:macro name="leg_B_01_geometry">
+        <geometry>
+            <mesh filename="${leg_B_01}" scale="${scaling}" />
+        </geometry>
+    </xacro:macro>
+    
+	<!-- first and second motor block -->
+    <xacro:macro name="leg_B_12_geometry">
+        <geometry>
+			<mesh filename="${leg_B_12}" scale="${scaling}" />
+		</geometry>
+    </xacro:macro>
+    
+	<!-- second link -->
+    <xacro:macro name="leg_B_23_geometry">
+        <geometry>
+			<mesh filename="${leg_B_23}" scale="${scaling}" />
+		</geometry>
+    </xacro:macro>
+    
+    <xacro:macro name="bottom_shell_geometry">
+        <geometry>
+			<mesh filename="${bottom_shell}" scale="${scaling}" />
+		</geometry>
+    </xacro:macro>
+    	
+    <xacro:macro name="leg_U_01_geometry">
+        <geometry>
+			<mesh filename="${leg_U_01}" scale="${scaling}" />
+		</geometry>
+    </xacro:macro>
+	
+    <xacro:macro name="upper_shell_geometry">
+		<origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+			<mesh filename="${upper_shell}" scale="${scaling}" />
+		</geometry>
+    </xacro:macro>
+
+
+</robot>

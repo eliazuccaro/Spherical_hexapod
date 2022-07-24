@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- variables including -->
+    <xacro:include filename="$(find shellbot_pkg)/models/variables.urdf.xacro" />
+
+    <!-- upper leg description -->
+    <xacro:macro name="upper_leg" params="leg_num_U">     
+    
+       <!-- circular coordinates from central gear to leg start -->
+        <xacro:property name="DH_U_FF_pos" value="0 0 ${U_distance_Z}" />
+        <xacro:property name="DH_U_FF_rot" value="0 0 ${(1.04719 * leg_num_U) - (12 * pi / 180)}" />
+        
+        <!-- ******************************************** LINKS AND JOINTS ********************************************* -->
+        <!-- q_b_i_0_offset -->
+        <joint name="q_u_${leg_num_U}_0_offset" type="fixed">
+            <parent link="base_chassis"/>
+            <child link="L_U_${leg_num_U}_0_offset"/>
+            <origin rpy="${DH_U_FF_rot}" xyz="${DH_U_FF_pos}"/>
+            <dynamics damping="6e-10" friction="0.13"/>
+        </joint>
+
+        <!-- fixed link - from center to leg start -->
+        <link name="L_U_${leg_num_U}_0_offset">
+            <selfCollide>1</selfCollide>
+            <xacro:visual_off_FF_link_U_i/>
+            <inertial>
+                <mass value="1e-3"/>
+                <xacro:visual_off_FF_link_U_i/>
+                <xacro:leg_u_i_0_inertia/>
+            </inertial>
+        </link>     
+
+        <!-- q_u_i_1 - upper leg first motor -->
+        <joint name="q_u_${leg_num_U}_1" type="revolute">
+            <parent link="L_U_${leg_num_U}_0_offset"/>
+            <child link="L_U_${leg_num_U}_1"/>
+            <origin rpy="${DH_q_2_1_1_rot}" xyz="${DH_q_2_1_1_pos}"/>
+            <limit effort="${AX_12A_maxeffort}" velocity="${AX_12A_maxspeed}" upper="${q_U_1_max_pos}" lower ="${q_U_1_min_pos}" />
+            <dynamics damping="6e-10" friction="0.13"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+
+        <!-- leg_U_i_1 link - upper leg first link -->
+        <link name="L_U_${leg_num_U}_1">
+            <selfCollide>1</selfCollide>
+            <inertial>
+                <xacro:visual_off_leg_U_i_1/>
+                <mass value="${LU_i_1_m}"/>
+                <xacro:leg_U_i_1_inertia/>
+            </inertial>
+            <collision name="L_U_${leg_num_U}_1">
+                <xacro:visual_off_leg_U_i_1/>
+                <xacro:leg_U_01_geometry/>
+            </collision>
+            <visual>
+                <xacro:visual_off_leg_U_i_1/>
+                <xacro:leg_U_01_geometry/>
+            </visual>
+        </link>    
+
+        <!-- q_u_i_2 - upper leg second link -->
+        <joint name="q_u_${leg_num_U}_2" type="revolute">
+            <parent link="L_U_${leg_num_U}_1"/>
+            <child link="L_U_${leg_num_U}_2"/>
+            <origin rpy="${DH_q_2_1_2_rot}" xyz="${DH_q_2_1_2_pos}"/>
+            <limit effort="${AX_12A_maxeffort}" velocity="${AX_12A_maxspeed}" upper="${q_U_2_max_pos}" lower ="${q_U_2_min_pos}" />
+            <dynamics damping="6e-10" friction="0.13"/>
+            <axis xyz="0 0 1"/>
+        </joint>
+
+        <!-- leg_U_i_1 link - upper shell -->
+        <link name="L_U_${leg_num_U}_2">
+            <selfCollide>1</selfCollide>
+            <inertial>
+                <xacro:visual_off_leg_U_i_2/>
+                <mass value="${LU_i_2_m}"/>
+                <xacro:leg_U_i_2_inertia/>
+            </inertial>
+            <collision name="L_U_${leg_num_U}_2">
+                <xacro:visual_off_leg_U_i_2/>
+                <xacro:upper_shell_geometry/>
+            </collision>
+            <visual>
+                <xacro:visual_off_leg_U_i_2/>
+                <xacro:upper_shell_geometry/>
+            </visual>
+        </link>
+
+        <!-- ******************************************** GAZEBO ******************************************** -->
+        <gazebo reference="FF_link_U_${leg_num_U}">
+            <selfCollide>1</selfCollide>
+        </gazebo>
+
+        <gazebo reference="leg_u_${leg_num_U}_1">
+            <selfCollide>1</selfCollide>
+        </gazebo>
+
+        <gazebo reference="leg_u_${leg_num_U}_2">
+            <selfCollide>0</selfCollide>
+        </gazebo>
+
+        <!-- ****************************************** ACTUATION ****************************************** -->
+        <transmission name="tran_u_${leg_num_U}_1">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="q_u_${leg_num_U}_1">
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="motor_u_${leg_num_U}_1">
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission>
+
+        <transmission name="tran_u_${leg_num_U}_2">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="q_u_${leg_num_U}_2">
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="motor_u_${leg_num_U}_2">
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission>
+
+    </xacro:macro>
+</robot>

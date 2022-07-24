@@ -1,0 +1,39 @@
+<launch>
+
+  <arg name="hide_gazebo" default="false"/>
+  <arg name="model" default="$(find shellbot_pkg)/models/shell_robot.urdf.xacro"/>
+  <arg name="world" default="$(find shellbot_pkg)/worlds/emtpy.world"/>
+  <arg name="rvizconfig" default="$(find shellbot_pkg)/rviz/base.rviz"/>
+
+  <!-- joints number definitions (reals: 31 - simulated: 36) -->
+  <rosparam file="$(find shellbot_pkg)/config/motors_number_simulated.yaml"/>
+  
+  <!-- Rviz - uncomment to launch Rviz -->
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" /> -->
+
+  <!-- Gazebo -->
+  <include file="$(find shellbot_pkg)/launch/init_gazebo.launch">
+    <arg name="model" value="$(arg model)" />
+    <arg name="world" value="$(arg world)" />
+    <arg name="no_gui" value="$(arg hide_gazebo)"/>
+  </include>
+
+  <!-- joints position publication (i.e. simulated sensoring) -->
+  <rosparam command="load"
+            file="$(find shellbot_pkg)/config/joint_states.yaml"
+            ns="shell_joint_states_controller" />
+
+  <!-- joint motor controls (i.e. simulated motors) -->
+  <rosparam command="load"
+            file="$(find shellbot_pkg)/config/shellbot_control_simulated.yaml"
+            ns="shellbot_legs_controller" />
+
+  <!-- "controller_manager/spawner" loads and starts that namespaces -->
+  <node name="shellbot_controller_spawner" pkg="controller_manager" type="spawner"
+    args="shell_joint_states_controller shellbot_legs_controller"/>
+
+  <!-- Firmware -->
+  <node name="inverse_kinematic_server" pkg="shellbot_pkg" type="inverse_kinematic_server.py" output="screen"/>
+  <node name="trajectory_handler" pkg="shellbot_pkg" type="trajectory_handler.py" output="screen"/>
+
+</launch>

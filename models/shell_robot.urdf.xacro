@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name ="shell_robot">
+
+  <!-- legs index variables definitions -->
+  <xacro:arg name="leg_num_B" default=""/>
+  <xacro:arg name="leg_num_U" default=""/>
+
+  <!-- xacro files including -->
+  <xacro:include filename="$(find shellbot_pkg)/models/chassis.urdf.xacro" />
+  <xacro:include filename="$(find shellbot_pkg)/models/shell_robot_bottom_leg.urdf.xacro"/>
+  <xacro:include filename="$(find shellbot_pkg)/models/shell_robot_upper_leg.urdf.xacro"/>
+  <xacro:include filename="$(find shellbot_pkg)/models/variables.urdf.xacro"/>
+
+  <!-- bottom legs definitions - index: leg_B -->
+  <xacro:bottom_leg leg_num_B="1"/>
+  <xacro:bottom_leg leg_num_B="2"/>
+  <xacro:bottom_leg leg_num_B="3"/>
+  <xacro:bottom_leg leg_num_B="4"/>
+  <xacro:bottom_leg leg_num_B="5"/>
+  <xacro:bottom_leg leg_num_B="6"/>
+
+  <!-- upper legs definitions - index: leg_U -->
+  <xacro:upper_leg leg_num_U="1"/>
+  <xacro:upper_leg leg_num_U="2"/>
+  <xacro:upper_leg leg_num_U="3"/>
+  <xacro:upper_leg leg_num_U="4"/>
+  <xacro:upper_leg leg_num_U="5"/>
+  <xacro:upper_leg leg_num_U="6"/>
+
+  <!-- physics engine definition, included in variables.urdf.xacro -->
+  <xacro:ode_solver/>
+
+  <!-- Gazebo plugin for ROS Control -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+      <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
+
+</robot>

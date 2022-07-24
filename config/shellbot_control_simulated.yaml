@@ -1,0 +1,135 @@
+# Controls joints of all legs togheter in position
+# 
+# Try:
+# rostopic pub  /hex_legs_controller/command std_msgs/Float64MultiArray "layout:
+#   dim:
+#   - label: ''
+#     size: 18
+#     stride: 0
+#   data_offset: 0
+# data: [0.5236, 0.10715, -2.2143, 0, 0.10715, -2.2143, -0.5236, 0.10715, -2.2143, -0.5236, 0.10715, -2.2143, 0, 0.10715, -2.2143, 0.5236, 0.10715, -2.2143]" -0
+# 
+# To reset all zeros:
+# data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]" -0
+
+# Read this: https://github.com/ros-controls/ros_controllers/issues/166
+
+# To control torques directly (pid not available):
+# type: "effort_controllers/JointGroupEffortController"
+
+# To control positions by controlling torques (pid available):
+type: "effort_controllers/JointGroupPositionController"
+joints:
+ - q_b_1_1
+ - q_b_1_2
+ - q_b_1_3
+ - q_b_1_4
+ - q_b_2_1
+ - q_b_2_2
+ - q_b_2_3
+ - q_b_2_4
+ - q_b_3_1
+ - q_b_3_2
+ - q_b_3_3
+ - q_b_3_4
+ - q_b_4_1
+ - q_b_4_2
+ - q_b_4_3
+ - q_b_4_4
+ - q_b_5_1
+ - q_b_5_2
+ - q_b_5_3
+ - q_b_5_4
+ - q_b_6_1
+ - q_b_6_2
+ - q_b_6_3
+ - q_b_6_4
+ - q_u_1_1
+ - q_u_1_2
+ - q_u_2_1
+ - q_u_2_2
+ - q_u_3_1
+ - q_u_3_2
+ - q_u_4_1
+ - q_u_4_2
+ - q_u_5_1
+ - q_u_5_2
+ - q_u_6_1
+ - q_u_6_2
+
+
+# bottom legs PID gains (sono valori usati in Gazebo, non nei veri motori)
+q_b_1_1:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_1_2:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_1_3:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_1_4:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_2_1:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_2_2:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_2_3:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_2_4:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_3_1:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_3_2:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_3_3:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_3_4:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_4_1:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_4_2:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_4_3:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_4_4:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_5_1:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_5_2:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_5_3:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_5_4:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_6_1:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_6_2:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_6_3:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_b_6_4:
+  pid: {p: 10000 , i: 0 , d: 1}
+
+# upper legs PID gains
+q_u_1_1:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_u_1_2:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_u_2_1:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_u_2_2:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_u_3_1:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_u_3_2:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_u_4_1:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_u_4_2:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_u_5_1:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_u_5_2:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_u_6_1:
+  pid: {p: 10000 , i: 0 , d: 1}
+q_u_6_2:
+  pid: {p: 10000 , i: 0 , d: 1}

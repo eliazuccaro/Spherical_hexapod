@@ -1,0 +1,4 @@
+# The joint_state_controller publish transformations for any not-fixed joint into ROS directly from Gazebo.
+
+type: "joint_state_controller/JointStateController"
+publish_rate: 50
