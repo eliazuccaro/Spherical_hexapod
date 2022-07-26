@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="base">
+    <!-- global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <gravity>0 0 0</gravity>
+    <!-- <gravity>0 0 -9.8</gravity> -->
+
+    <!-- Physics solving modes. More info at: http://gazebosim.org/tutorials?tut=physics_params -->
+    
+    <!-- Faster to compute (real time factor ~99%), but feet slide on the ground -->
+    <physics name="ode_default" type="ode" default="true">
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>50</iters> <!-- increase this for more accuracy (but more computational costs) -->
+        </solver>
+      </ode>
+      <!-- max_step_size * real_time_update_rate = real-time factor (try to keep it =1) -->
+      <max_step_size>0.0001</max_step_size> <!-- decrease this for more accuracy -->
+      <real_time_update_rate>10000</real_time_update_rate>
+    </physics>
+
+    <!-- Better conctacts with the ground, but real-time factor ~33%. Activable using "gz physics -o ode_precise" -->
+    <physics name="ode_precise" type="ode" default="true">
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>500</iters>
+        </solver>
+      </ode>
+      <max_step_size>0.0001</max_step_size>
+      <real_time_update_rate>10000</real_time_update_rate>
+    </physics>
+
+    <!-- Real-time factor x2. Activable using "gz physics -o fast_forward" -->
+    <physics name="fast_forward" type="ode">
+      <real_time_update_rate>2000</real_time_update_rate>
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>50</iters>
+        </solver>
+      </ode>
+    </physics>
+
+    <!-- Unlimited real-time factor. Activable using "gz physics -o fastest" -->
+    <physics name="fastest" type="ode">
+      <real_time_update_rate>0</real_time_update_rate>
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>50</iters>
+        </solver>
+      </ode>
+    </physics>
+
+  </world>
+</sdf>
